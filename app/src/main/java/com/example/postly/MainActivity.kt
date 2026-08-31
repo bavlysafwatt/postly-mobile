@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import com.example.postly.core.data.local.CurrentUserCache
 import com.example.postly.core.data.local.ThemeModePreference
 import com.example.postly.core.navigation.RootNavHost

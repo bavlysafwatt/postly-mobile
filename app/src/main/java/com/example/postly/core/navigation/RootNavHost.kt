@@ -18,39 +18,12 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.postly.core.components.PostCard
-import com.example.postly.core.components.PostlyButton
-import com.example.postly.core.components.PostlyTextField
 import com.example.postly.core.data.local.CurrentUserCache
-import com.example.postly.core.domain.model.Post
-import com.example.postly.core.domain.model.UserSummary
 
 @Composable
 private fun PlaceholderScreen(label: String) {
     Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Column() {
-            PostCard(
-                post = Post(
-                    id = "1",
-                    content = "This is a sample post content. It can be quite long, so it should be truncated in the UI.",
-                    photos = listOf("https://iso.500px.com/wp-content/uploads/2016/02/stock-photo-114337435-1500x1000.jpg"),
-                    author = UserSummary(
-                        id = "1",
-                        name = "John Doe",
-                        photo = "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRb82KXH74srPik8_S3ZOA8NrUr44BsFRstR4dEVmKtobWkZXgUm6WCi5Yf&s=10",
-                        username = "john_doe",
-                    ),
-                    likeCount = 15,
-                    commentCount = 3,
-                    isLiked = true,
-                    isBookmarked = false,
-                    createdAt = "2026-08-02T12:34:56Z",
-                ),
-                onClick = {},
-                onLikeToggle = {  },
-                onBookmarkToggle = {  },
-            )
-        }
+        Text(text = label, style = MaterialTheme.typography.titleLarge)
     }
 }
 
