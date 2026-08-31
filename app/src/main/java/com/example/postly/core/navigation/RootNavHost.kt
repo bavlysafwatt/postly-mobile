@@ -64,7 +64,7 @@ fun RootNavHost(currentUserCache: CurrentUserCache) {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Route.Home,
+            startDestination = Route.Splash,
             modifier = Modifier.padding(innerPadding)
         ) {
             composable<Route.Splash> { PlaceholderScreen("Splash") }

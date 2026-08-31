@@ -1,5 +1,7 @@
 package com.example.postly.core.navigation
 
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.Home
 import androidx.compose.material.icons.rounded.Notifications
@@ -9,6 +11,7 @@ import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.example.postly.core.components.Avatar
 import com.example.postly.core.domain.model.User
@@ -28,7 +31,7 @@ fun BottomNavBar(
     onNavigate: (Route) -> Unit,
     currentUser: User?
 ) {
-    NavigationBar {
+    NavigationBar(modifier = Modifier.height(70.dp)) {
         bottomNavItems.forEach { item ->
             NavigationBarItem(
                 selected = currentRoute == item.route,
@@ -46,7 +49,6 @@ fun BottomNavBar(
                         else -> Unit
                     }
                 },
-                label = { Text(item.label) }
             )
         }
     }
