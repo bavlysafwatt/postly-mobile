@@ -23,6 +23,8 @@ import com.example.postly.features.auth.presentation.forgotpassword.ForgotPasswo
 import com.example.postly.features.auth.presentation.login.LoginScreen
 import com.example.postly.features.auth.presentation.register.RegisterScreen
 import com.example.postly.features.auth.presentation.resetpassword.ResetPasswordScreen
+import com.example.postly.features.onboarding.presentation.OnboardingScreen
+import com.example.postly.features.splash.presentation.SplashScreen
 
 @Composable
 private fun PlaceholderScreen(label: String) {
@@ -68,11 +70,29 @@ fun RootNavHost(currentUserCache: CurrentUserCache) {
     ) { innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Route.Auth.Login,
+            startDestination = Route.Splash,
             modifier = Modifier.padding(innerPadding)
         ) {
-            composable<Route.Splash> { PlaceholderScreen("Splash") }
-            composable<Route.Onboarding> { PlaceholderScreen("Onboarding") }
+            composable<Route.Splash> {
+                SplashScreen(
+                    onNavigateToOnboarding = {
+                        navController.navigate(Route.Onboarding) { popUpTo(0) { inclusive = true } }
+                    },
+                    onNavigateToHome = {
+                        navController.navigate(Route.Home) { popUpTo(0) { inclusive = true } }
+                    },
+                    onNavigateToLogin = {
+                        navController.navigate(Route.Auth.Login) { popUpTo(0) { inclusive = true } }
+                    }
+                )
+            }
+            composable<Route.Onboarding> {
+                OnboardingScreen(
+                    onFinished = {
+                        navController.navigate(Route.Auth.Login) { popUpTo(0) { inclusive = true } }
+                    }
+                )
+            }
 
             composable<Route.Auth.Login> {
                 LoginScreen(
