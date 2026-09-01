@@ -13,7 +13,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import coil3.compose.AsyncImage
+import coil3.compose.SubcomposeAsyncImage
+import com.valentinilk.shimmer.shimmer
 
 @Composable
 fun Avatar(
@@ -23,26 +24,58 @@ fun Avatar(
     size: Dp = 40.dp
 ) {
     if (photoUrl.isNullOrBlank()) {
-        Box(
-            modifier = modifier
-                .size(size)
-                .clip(CircleShape)
-                .background(MaterialTheme.colorScheme.primaryContainer),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = name.firstOrNull()?.uppercase() ?: "?",
-                color = MaterialTheme.colorScheme.onPrimaryContainer
-            )
-        }
+        AvatarPlaceholder(
+            name = name,
+            modifier = modifier,
+            size = size
+        )
     } else {
-        AsyncImage(
+        SubcomposeAsyncImage(
             model = photoUrl,
             contentDescription = name,
             contentScale = ContentScale.Crop,
             modifier = modifier
                 .size(size)
-                .clip(CircleShape)
+                .clip(CircleShape),
+
+            loading = {
+                Box(
+                    modifier = Modifier
+                        .size(size)
+                        .clip(CircleShape)
+                        .shimmer()
+                        .background(
+                            MaterialTheme.colorScheme.surfaceVariant
+                        )
+                )
+            },
+
+            error = {
+                AvatarPlaceholder(
+                    name = name,
+                    size = size
+                )
+            }
+        )
+    }
+}
+
+@Composable
+private fun AvatarPlaceholder(
+    name: String,
+    modifier: Modifier = Modifier,
+    size: Dp = 40.dp
+) {
+    Box(
+        modifier = modifier
+            .size(size)
+            .clip(CircleShape)
+            .background(MaterialTheme.colorScheme.primaryContainer),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            text = name.firstOrNull()?.uppercase() ?: "?",
+            color = MaterialTheme.colorScheme.onPrimaryContainer
         )
     }
 }
