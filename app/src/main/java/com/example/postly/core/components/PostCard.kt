@@ -68,15 +68,10 @@ fun PostCard(
             }
         }
 
-        // Photo — full-bleed, no side padding, authentic to a feed post
-        post.photos.firstOrNull()?.let { photoUrl ->
-            AsyncImage(
-                model = photoUrl,
-                contentDescription = null,
-                contentScale = ContentScale.Crop,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(1f)
+        if (post.photos.isNotEmpty()) {
+            PostImageCarousel(
+                photos = post.photos,
+                modifier = Modifier.fillMaxWidth()
             )
         }
 

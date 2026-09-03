@@ -23,6 +23,9 @@ import com.example.postly.features.auth.presentation.forgotpassword.ForgotPasswo
 import com.example.postly.features.auth.presentation.login.LoginScreen
 import com.example.postly.features.auth.presentation.register.RegisterScreen
 import com.example.postly.features.auth.presentation.resetpassword.ResetPasswordScreen
+import com.example.postly.features.feed.presentation.createoredit.CreateOrEditPostScreen
+import com.example.postly.features.feed.presentation.feed.FeedScreen
+import com.example.postly.features.feed.presentation.postdetail.PostDetailScreen
 import com.example.postly.features.onboarding.presentation.OnboardingScreen
 import com.example.postly.features.splash.presentation.SplashScreen
 
@@ -128,14 +131,29 @@ fun RootNavHost(currentUserCache: CurrentUserCache) {
                 )
             }
 
-            composable<Route.Home> { PlaceholderScreen("Home / Feed") }
+            composable<Route.Home> {
+                FeedScreen(
+                    onPostClick = { postId -> navController.navigate(Route.PostDetail(postId)) },
+                    onCreatePost = { navController.navigate(Route.CreateOrEditPost()) }
+                )
+            }
             composable<Route.Search> { PlaceholderScreen("Search") }
             composable<Route.Notifications> { PlaceholderScreen("Notifications") }
             composable<Route.Profile> { PlaceholderScreen("Profile") }
 
             composable<Route.UserProfile> { PlaceholderScreen("User profile") }
-            composable<Route.PostDetail> { PlaceholderScreen("Post detail") }
-            composable<Route.CreateOrEditPost> { PlaceholderScreen("Create/edit post") }
+            composable<Route.PostDetail> {
+                PostDetailScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onEditPost = { postId -> navController.navigate(Route.CreateOrEditPost(postId)) }
+                )
+            }
+            composable<Route.CreateOrEditPost> {
+                CreateOrEditPostScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onSaveSuccess = { navController.popBackStack() }
+                )
+            }
             composable<Route.Followers> { PlaceholderScreen("Followers") }
             composable<Route.Following> { PlaceholderScreen("Following") }
             composable<Route.EditProfile> { PlaceholderScreen("Edit profile") }

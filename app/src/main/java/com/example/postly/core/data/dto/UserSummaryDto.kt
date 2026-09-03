@@ -1,7 +1,9 @@
 package com.example.postly.core.data.dto
 import com.example.postly.core.domain.model.UserSummary
+import com.google.gson.annotations.SerializedName
 
 data class UserSummaryDto(
+    @SerializedName("_id")
     val id: String? = null,
     val name: String = "",
     val username: String = "",

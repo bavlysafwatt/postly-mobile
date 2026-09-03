@@ -1,0 +1,13 @@
+package com.example.postly.features.feed.domain.usecase
+
+import com.example.postly.core.domain.Result
+import com.example.postly.core.domain.model.Post
+import com.example.postly.core.network.AppError
+import com.example.postly.features.feed.domain.repository.FeedRepository
+import javax.inject.Inject
+
+class GetPostUseCase @Inject constructor(
+    private val repository: FeedRepository
+) {
+    suspend operator fun invoke(postId: String): Result<Post, AppError> = repository.getPost(postId)
+}
