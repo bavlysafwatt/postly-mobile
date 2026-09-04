@@ -12,7 +12,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
-import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -27,6 +26,7 @@ import com.example.postly.features.feed.presentation.createoredit.CreateOrEditPo
 import com.example.postly.features.feed.presentation.feed.FeedScreen
 import com.example.postly.features.feed.presentation.postdetail.PostDetailScreen
 import com.example.postly.features.onboarding.presentation.OnboardingScreen
+import com.example.postly.features.search.presentation.SearchScreen
 import com.example.postly.features.splash.presentation.SplashScreen
 
 @Composable
@@ -59,9 +59,7 @@ fun RootNavHost(currentUserCache: CurrentUserCache) {
                     currentRoute = currentTab,
                     onNavigate = { route ->
                         navController.navigate(route) {
-                            popUpTo(navController.graph.findStartDestination().id) {
-                                saveState = true
-                            }
+                            popUpTo<Route.Home> { saveState = true }
                             launchSingleTop = true
                             restoreState = true
                         }
@@ -137,7 +135,13 @@ fun RootNavHost(currentUserCache: CurrentUserCache) {
                     onCreatePost = { navController.navigate(Route.CreateOrEditPost()) }
                 )
             }
-            composable<Route.Search> { PlaceholderScreen("Search") }
+            composable<Route.Search> {
+                SearchScreen(
+                    onUserClick = { userId ->
+                        navController.navigate(Route.UserProfile(userId))
+                    }
+                )
+            }
             composable<Route.Notifications> { PlaceholderScreen("Notifications") }
             composable<Route.Profile> { PlaceholderScreen("Profile") }
 
