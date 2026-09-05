@@ -25,6 +25,7 @@ import com.example.postly.features.auth.presentation.resetpassword.ResetPassword
 import com.example.postly.features.feed.presentation.createoredit.CreateOrEditPostScreen
 import com.example.postly.features.feed.presentation.feed.FeedScreen
 import com.example.postly.features.feed.presentation.postdetail.PostDetailScreen
+import com.example.postly.features.notifications.presentation.NotificationsScreen
 import com.example.postly.features.onboarding.presentation.OnboardingScreen
 import com.example.postly.features.search.presentation.SearchScreen
 import com.example.postly.features.splash.presentation.SplashScreen
@@ -142,7 +143,24 @@ fun RootNavHost(currentUserCache: CurrentUserCache) {
                     }
                 )
             }
-            composable<Route.Notifications> { PlaceholderScreen("Notifications") }
+            composable<Route.Notifications> {
+                NotificationsScreen(
+                    onNavigateToPostDetail = { postId ->
+                        navController.navigate(
+                            Route.PostDetail(
+                                postId
+                            )
+                        )
+                    },
+                    onNavigateToUserProfile = { userId ->
+                        navController.navigate(
+                            Route.UserProfile(
+                                userId
+                            )
+                        )
+                    }
+                )
+            }
             composable<Route.Profile> { PlaceholderScreen("Profile") }
 
             composable<Route.UserProfile> { PlaceholderScreen("User profile") }
