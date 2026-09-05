@@ -5,7 +5,6 @@ import com.example.postly.features.auth.data.dto.AuthEnvelope
 import com.example.postly.features.auth.data.dto.ForgotPasswordRequest
 import com.example.postly.features.auth.data.dto.LoginRequest
 import com.example.postly.features.auth.data.dto.ResetPasswordRequest
-import com.example.postly.features.auth.data.dto.UpdatePasswordRequest
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Response
@@ -30,10 +29,6 @@ interface AuthApi {
     @POST("api/v1/auth/login")
     suspend fun login(@Body request: LoginRequest): Response<BaseResponse<AuthEnvelope>>
 
-    @POST("api/v1/auth/update-password")
-    suspend fun updatePassword(@Body request: UpdatePasswordRequest): Response<BaseResponse<AuthEnvelope>>
-
-    // No `data` at all on success here ({status, message}) -- routed through safeApiCallUnit.
     @POST("api/v1/auth/forgot-password")
     suspend fun forgotPassword(@Body request: ForgotPasswordRequest): Response<BaseResponse<Unit?>>
 

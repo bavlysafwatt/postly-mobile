@@ -11,7 +11,6 @@ import com.example.postly.core.network.safeApiCallUnit
 import com.example.postly.features.auth.data.dto.ForgotPasswordRequest
 import com.example.postly.features.auth.data.dto.LoginRequest
 import com.example.postly.features.auth.data.dto.ResetPasswordRequest
-import com.example.postly.features.auth.data.dto.UpdatePasswordRequest
 import com.example.postly.features.auth.data.remote.AuthApi
 import com.example.postly.features.auth.domain.model.AuthSession
 import com.example.postly.features.auth.domain.repository.AuthRepository
@@ -51,17 +50,6 @@ class AuthRepositoryImpl @Inject constructor(
 
     override suspend fun login(email: String, password: String): Result<AuthSession, AppError> {
         val result = safeApiCall { api.login(LoginRequest(email, password)) }
-        return result.map { AuthSession(token = it.accessToken, user = it.user.toDomain()) }
-    }
-
-    override suspend fun updatePassword(
-        currentPassword: String,
-        newPassword: String,
-        passwordConfirm: String
-    ): Result<AuthSession, AppError> {
-        val result = safeApiCall {
-            api.updatePassword(UpdatePasswordRequest(currentPassword, newPassword, passwordConfirm))
-        }
         return result.map { AuthSession(token = it.accessToken, user = it.user.toDomain()) }
     }
 
