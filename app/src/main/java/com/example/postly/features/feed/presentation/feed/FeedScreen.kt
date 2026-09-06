@@ -1,6 +1,5 @@
 package com.example.postly.features.feed.presentation.feed
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -151,7 +150,7 @@ private fun FeedTopBar(onCreatePost: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(horizontal = 20.dp, vertical = 12.dp),
+            .padding(top = 8.dp, start = 16.dp, end = 16.dp, bottom = 0.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Spacer(modifier = Modifier.weight(1.4f))
