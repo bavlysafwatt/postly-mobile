@@ -27,15 +27,14 @@ import com.example.postly.features.feed.presentation.feed.FeedScreen
 import com.example.postly.features.feed.presentation.postdetail.PostDetailScreen
 import com.example.postly.features.notifications.presentation.NotificationsScreen
 import com.example.postly.features.onboarding.presentation.OnboardingScreen
+import com.example.postly.features.profile.presentation.editprofile.EditProfileScreen
+import com.example.postly.features.profile.presentation.profile.ProfileScreen
+import com.example.postly.features.profile.presentation.userlist.FollowListMode
+import com.example.postly.features.profile.presentation.userlist.FollowListScreen
 import com.example.postly.features.search.presentation.SearchScreen
+import com.example.postly.features.settings.presentation.changepassword.ChangePasswordScreen
+import com.example.postly.features.settings.presentation.settings.SettingsScreen
 import com.example.postly.features.splash.presentation.SplashScreen
-
-@Composable
-private fun PlaceholderScreen(label: String) {
-    Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-        Text(text = label, style = MaterialTheme.typography.titleLarge)
-    }
-}
 
 @Composable
 fun RootNavHost(currentUserCache: CurrentUserCache) {
@@ -161,9 +160,54 @@ fun RootNavHost(currentUserCache: CurrentUserCache) {
                     }
                 )
             }
-            composable<Route.Profile> { PlaceholderScreen("Profile") }
+            composable<Route.Profile> {
+                ProfileScreen(
+                    userId = null,
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateToSettings = { navController.navigate(Route.Settings) },
+                    onNavigateToEditProfile = { navController.navigate(Route.EditProfile) },
+                    onNavigateToFollowers = { userId ->
+                        navController.navigate(
+                            Route.Followers(
+                                userId
+                            )
+                        )
+                    },
+                    onNavigateToFollowing = { userId ->
+                        navController.navigate(
+                            Route.Following(
+                                userId
+                            )
+                        )
+                    },
+                    onPostClick = { postId -> navController.navigate(Route.PostDetail(postId)) }
+                )
+            }
 
-            composable<Route.UserProfile> { PlaceholderScreen("User profile") }
+            composable<Route.UserProfile> { backStackEntry ->
+                val args = backStackEntry.toRoute<Route.UserProfile>()
+                ProfileScreen(
+                    userId = args.userId,
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateToSettings = { navController.navigate(Route.Settings) },
+                    onNavigateToEditProfile = { navController.navigate(Route.EditProfile) },
+                    onNavigateToFollowers = { userId ->
+                        navController.navigate(
+                            Route.Followers(
+                                userId
+                            )
+                        )
+                    },
+                    onNavigateToFollowing = { userId ->
+                        navController.navigate(
+                            Route.Following(
+                                userId
+                            )
+                        )
+                    },
+                    onPostClick = { postId -> navController.navigate(Route.PostDetail(postId)) }
+                )
+            }
             composable<Route.PostDetail> {
                 PostDetailScreen(
                     onNavigateBack = { navController.popBackStack() },
@@ -176,10 +220,49 @@ fun RootNavHost(currentUserCache: CurrentUserCache) {
                     onSaveSuccess = { navController.popBackStack() }
                 )
             }
-            composable<Route.Followers> { PlaceholderScreen("Followers") }
-            composable<Route.Following> { PlaceholderScreen("Following") }
-            composable<Route.EditProfile> { PlaceholderScreen("Edit profile") }
-            composable<Route.Settings> { PlaceholderScreen("Settings") }
+            composable<Route.Followers> { backStackEntry ->
+                val args = backStackEntry.toRoute<Route.Followers>()
+                FollowListScreen(
+                    userId = args.userId,
+                    mode = FollowListMode.FOLLOWERS,
+                    onNavigateBack = { navController.popBackStack() },
+                    onUserClick = { userId -> navController.navigate(Route.UserProfile(userId)) }
+                )
+            }
+            composable<Route.Following> { backStackEntry ->
+                val args = backStackEntry.toRoute<Route.Following>()
+                FollowListScreen(
+                    userId = args.userId,
+                    mode = FollowListMode.FOLLOWING,
+                    onNavigateBack = { navController.popBackStack() },
+                    onUserClick = { userId -> navController.navigate(Route.UserProfile(userId)) }
+                )
+            }
+            composable<Route.EditProfile> {
+                EditProfileScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onSaveSuccess = { navController.popBackStack() }
+                )
+            }
+            composable<Route.Settings> {
+                SettingsScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onNavigateToChangePassword = { navController.navigate(Route.ChangePassword) },
+                    onLoggedOut = {
+                        navController.navigate(Route.Auth.Login) {
+                            popUpTo(0) {
+                                inclusive = true
+                            }
+                        }
+                    }
+                )
+            }
+            composable<Route.ChangePassword> {
+                ChangePasswordScreen(
+                    onNavigateBack = { navController.popBackStack() },
+                    onSuccess = { navController.popBackStack() }
+                )
+            }
         }
     }
 }

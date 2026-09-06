@@ -6,6 +6,12 @@ sealed interface Route {
     @Serializable data object Splash : Route
     @Serializable data object Onboarding : Route
 
+    // Root-level graph containers
+    @Serializable
+    data object AuthGraph : Route
+    @Serializable
+    data object MainGraph : Route
+
     sealed interface Auth : Route {
         @Serializable data object Login : Auth
         @Serializable data object Register : Auth
@@ -17,7 +23,8 @@ sealed interface Route {
     @Serializable data object Home : Route
     @Serializable data object Search : Route
     @Serializable data object Notifications : Route
-    @Serializable data object Profile : Route          // own profile
+    @Serializable
+    data object Profile : Route
 
     // stacked screens, no bottom bar, reachable from any tab
     @Serializable data class UserProfile(val userId: String) : Route
@@ -27,4 +34,6 @@ sealed interface Route {
     @Serializable data class Following(val userId: String) : Route
     @Serializable data object EditProfile : Route
     @Serializable data object Settings : Route
+    @Serializable
+    data object ChangePassword : Route
 }
