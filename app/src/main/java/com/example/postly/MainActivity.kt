@@ -6,7 +6,6 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import com.example.postly.core.data.local.CurrentUserCache
 import com.example.postly.core.data.local.ThemeModePreference
 import com.example.postly.core.navigation.RootNavHost
 import com.example.postly.ui.theme.PostlyTheme
@@ -16,9 +15,6 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
-    @Inject lateinit var currentUserCache: CurrentUserCache
-
     @Inject lateinit var themeModePreference: ThemeModePreference
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -28,7 +24,7 @@ class MainActivity : ComponentActivity() {
             val themeMode by themeModePreference.observeThemeMode().collectAsState(initial = ThemeMode.SYSTEM)
 
             PostlyTheme(themeMode = themeMode) {
-                RootNavHost(currentUserCache = currentUserCache)
+                RootNavHost()
             }
         }
     }

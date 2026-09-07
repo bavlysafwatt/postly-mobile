@@ -5,14 +5,13 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
-import com.example.postly.core.data.local.CurrentUserCache
+import com.example.postly.core.domain.model.User
 import com.example.postly.features.feed.presentation.createoredit.CreateOrEditPostScreen
 import com.example.postly.features.feed.presentation.feed.FeedScreen
 import com.example.postly.features.feed.presentation.postdetail.PostDetailScreen
@@ -27,12 +26,10 @@ import com.example.postly.features.settings.presentation.settings.SettingsScreen
 
 @Composable
 fun MainNavHost(
-    currentUserCache: CurrentUserCache,
+    currentUser: User?,
     onLoggedOut: () -> Unit
 ) {
     val navController = rememberNavController()
-    val currentUser by currentUserCache.observeUser()
-        .collectAsStateWithLifecycle(initialValue = null)
 
     val backStackEntry by navController.currentBackStackEntryAsState()
     val destination = backStackEntry?.destination

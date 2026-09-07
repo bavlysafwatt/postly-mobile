@@ -4,17 +4,30 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.postly.core.data.local.CurrentUserCache
 import com.example.postly.features.onboarding.presentation.OnboardingScreen
 import com.example.postly.features.splash.presentation.SplashScreen
 
 @Composable
-fun RootNavHost(currentUserCache: CurrentUserCache) {
+fun RootNavHost(sessionViewModel: SessionViewModel = hiltViewModel()) {
     val rootNavController = rememberNavController()
+    val currentUser by sessionViewModel.currentUser.collectAsStateWithLifecycle()
+
+    fun forceLogoutToAuth() {
+        sessionViewModel.clearSession()
+        rootNavController.navigate(Route.AuthGraph) { popUpTo(0) { inclusive = true } }
+    }
+
+    LaunchedEffect(Unit) {
+        sessionViewModel.sessionExpired.collect { forceLogoutToAuth() }
+    }
 
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -73,7 +86,7 @@ fun RootNavHost(currentUserCache: CurrentUserCache) {
             }
             composable<Route.MainGraph> {
                 MainNavHost(
-                    currentUserCache = currentUserCache,
+                    currentUser = currentUser,
                     onLoggedOut = {
                         rootNavController.navigate(Route.AuthGraph) {
                             popUpTo(0) {

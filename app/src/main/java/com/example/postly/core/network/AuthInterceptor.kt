@@ -7,7 +7,8 @@ import okhttp3.Response
 import javax.inject.Inject
 
 class AuthInterceptor @Inject constructor(
-    private val tokenManager: TokenManager
+    private val tokenManager: TokenManager,
+    private val sessionExpiredNotifier: SessionExpiredNotifier
 ) : Interceptor {
 
     override fun intercept(chain: Interceptor.Chain): Response {
@@ -21,6 +22,12 @@ class AuthInterceptor @Inject constructor(
             chain.request()
         }
 
-        return chain.proceed(request)
+        val response = chain.proceed(request)
+
+        if (response.code == 401 && token != null) {
+            sessionExpiredNotifier.notifyEvent()
+        }
+
+        return response
     }
 }
