@@ -19,6 +19,7 @@ import com.example.postly.features.splash.presentation.SplashScreen
 fun RootNavHost(sessionViewModel: SessionViewModel = hiltViewModel()) {
     val rootNavController = rememberNavController()
     val currentUser by sessionViewModel.currentUser.collectAsStateWithLifecycle()
+    val pendingDeepLink by sessionViewModel.pendingDeepLink.collectAsStateWithLifecycle()
 
     fun forceLogoutToAuth() {
         sessionViewModel.clearSession()
@@ -87,13 +88,9 @@ fun RootNavHost(sessionViewModel: SessionViewModel = hiltViewModel()) {
             composable<Route.MainGraph> {
                 MainNavHost(
                     currentUser = currentUser,
-                    onLoggedOut = {
-                        rootNavController.navigate(Route.AuthGraph) {
-                            popUpTo(0) {
-                                inclusive = true
-                            }
-                        }
-                    }
+                    onLoggedOut = { forceLogoutToAuth() },
+                    pendingDeepLink = pendingDeepLink,
+                    onDeepLinkConsumed = sessionViewModel::consumeDeepLink
                 )
             }
         }

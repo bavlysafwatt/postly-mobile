@@ -1,18 +1,19 @@
 package com.example.postly.features.settings.presentation.settings
 
-import androidx.compose.foundation.clickable
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.rounded.ArrowBack
-import androidx.compose.material.icons.rounded.Logout
 import androidx.compose.material.icons.rounded.Lock
+import androidx.compose.material.icons.rounded.Logout
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -21,30 +22,26 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SegmentedButton
-import androidx.compose.material3.SegmentedButtonDefaults
-import androidx.compose.material3.SingleChoiceSegmentedButtonRow
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
-import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
+import androidx.core.content.ContextCompat
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.postly.features.settings.presentation.settings.components.PushToggleRow
 import com.example.postly.features.settings.presentation.settings.components.SectionHeader
 import com.example.postly.features.settings.presentation.settings.components.SettingsRow
 import com.example.postly.features.settings.presentation.settings.components.ThemeModeSelector
-import com.example.postly.ui.theme.ThemeMode
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,10 +52,37 @@ fun SettingsScreen(
     onLoggedOut: () -> Unit
 ) {
     val themeMode by viewModel.themeMode.collectAsStateWithLifecycle()
+    val pushEnabled by viewModel.pushEnabled.collectAsStateWithLifecycle()
     val isLoggedOut by viewModel.isLoggedOut.collectAsStateWithLifecycle()
     var showLogoutConfirm by remember { mutableStateOf(false) }
+    val snackbarHostState = remember { SnackbarHostState() }
+    val context = LocalContext.current
+
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission()
+    ) { granted -> if (granted) viewModel.setPushNotificationsEnabled(true) }
 
     LaunchedEffect(isLoggedOut) { if (isLoggedOut) onLoggedOut() }
+    LaunchedEffect(Unit) { viewModel.errorEvent.collect { snackbarHostState.showSnackbar(it) } }
+
+    fun onTogglePush(enabled: Boolean) {
+        if (!enabled) {
+            viewModel.setPushNotificationsEnabled(false)
+            return
+        }
+        val needsRuntimePermission = Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+        val alreadyGranted = !needsRuntimePermission ||
+                ContextCompat.checkSelfPermission(
+                    context,
+                    Manifest.permission.POST_NOTIFICATIONS
+                ) == PackageManager.PERMISSION_GRANTED
+
+        if (alreadyGranted) {
+            viewModel.setPushNotificationsEnabled(true)
+        } else {
+            notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -78,6 +102,12 @@ fun SettingsScreen(
             .padding(padding)) {
             SectionHeader("Appearance")
             ThemeModeSelector(selected = themeMode, onSelect = viewModel::setThemeMode)
+
+            Spacer(modifier = Modifier.padding(vertical = 12.dp))
+            HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))
+
+            SectionHeader("Notifications")
+            PushToggleRow(enabled = pushEnabled, onToggle = ::onTogglePush)
 
             Spacer(modifier = Modifier.padding(vertical = 12.dp))
             HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.4f))

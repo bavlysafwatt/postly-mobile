@@ -1,6 +1,7 @@
 package com.example.postly
 
 import android.app.Application
+import com.example.postly.core.push.PostlyFirebaseMessagingService
 import dagger.hilt.android.HiltAndroidApp
 
 /**
@@ -8,4 +9,9 @@ import dagger.hilt.android.HiltAndroidApp
  * including a base class for the application that serves as the app-level dependency container.
  */
 @HiltAndroidApp
-class PostlyApplication : Application()
+class PostlyApplication : Application() {
+    override fun onCreate() {
+        super.onCreate()
+        PostlyFirebaseMessagingService.createNotificationChannel(this)
+    }
+}

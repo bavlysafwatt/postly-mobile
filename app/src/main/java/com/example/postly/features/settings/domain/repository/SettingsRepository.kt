@@ -13,6 +13,7 @@ interface SettingsRepository {
         newPassword: String,
         passwordConfirm: String
     ): Result<Unit, AppError>
-
     suspend fun logout()
+    fun observePushNotificationsEnabled(): Flow<Boolean>
+    suspend fun setPushNotificationsEnabled(enabled: Boolean): Result<Unit, AppError>
 }

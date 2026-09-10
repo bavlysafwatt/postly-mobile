@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.kotlin.serialization)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt.android)
+    alias(libs.plugins.google.services)
 }
 
 android {
@@ -92,6 +93,12 @@ dependencies {
     implementation(libs.compose.shimmer)
     implementation(libs.materialkolor)
     implementation(libs.androidx.core.splashscreen)
+
+    // Firebase
+    // Push notifications (Firebase Cloud Messaging)
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.messaging)
+    implementation(libs.kotlinx.coroutines.play.services)
 
     // Testing
     testImplementation(libs.junit)

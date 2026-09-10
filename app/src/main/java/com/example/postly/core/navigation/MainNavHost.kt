@@ -3,6 +3,7 @@ package com.example.postly.core.navigation
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavDestination.Companion.hasRoute
@@ -12,6 +13,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.example.postly.core.domain.model.User
+import com.example.postly.core.push.PushDeepLink
 import com.example.postly.features.feed.presentation.createoredit.CreateOrEditPostScreen
 import com.example.postly.features.feed.presentation.feed.FeedScreen
 import com.example.postly.features.feed.presentation.postdetail.PostDetailScreen
@@ -27,7 +29,9 @@ import com.example.postly.features.settings.presentation.settings.SettingsScreen
 @Composable
 fun MainNavHost(
     currentUser: User?,
-    onLoggedOut: () -> Unit
+    onLoggedOut: () -> Unit,
+    pendingDeepLink: PushDeepLink?,
+    onDeepLinkConsumed: () -> Unit
 ) {
     val navController = rememberNavController()
 
@@ -40,6 +44,15 @@ fun MainNavHost(
         destination?.hasRoute<Route.Notifications>() == true -> Route.Notifications
         destination?.hasRoute<Route.Profile>() == true -> Route.Profile
         else -> null
+    }
+
+    LaunchedEffect(pendingDeepLink) {
+        val link = pendingDeepLink ?: return@LaunchedEffect
+        when (link.type) {
+            "like", "comment" -> link.postId?.let { navController.navigate(Route.PostDetail(it)) }
+            "follow" -> link.senderId?.let { navController.navigate(Route.UserProfile(it)) }
+        }
+        onDeepLinkConsumed()
     }
 
     Scaffold(
