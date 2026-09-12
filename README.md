@@ -1,6 +1,6 @@
 # Postly
 
-Postly is an Instagram-style social media app built natively for Android with **Kotlin and Jetpack Compose**. Share photos and updates, follow people, like and comment, bookmark posts, and get real-time push notifications for activity on your account.
+Postly is a social media app built natively for Android with **Kotlin and Jetpack Compose**. Share photos and updates, follow people, like and comment, bookmark posts, and get real-time push notifications for activity on your account.
 
 ## Backend
 
